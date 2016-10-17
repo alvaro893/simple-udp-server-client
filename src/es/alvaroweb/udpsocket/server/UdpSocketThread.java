@@ -13,7 +13,11 @@ import javax.xml.bind.DatatypeConverter;
 public class UdpSocketThread extends Thread {
 
     protected DatagramSocket socket = null;
-
+    private  DatagramSocket socketController;
+    //*** client controller must send this 
+    private InetAddress localAdress = InetAddress.getByName("localhost");
+    private int controllerPort = 44446;
+    //***
     public UdpSocketThread() throws IOException {
 	this("UDPseverThread");
     }
@@ -21,6 +25,7 @@ public class UdpSocketThread extends Thread {
     public UdpSocketThread(String name) throws IOException {
         super(name);
         socket = new DatagramSocket(4445);
+        socketController = new DatagramSocket();
     }
 
     @Override
@@ -37,6 +42,11 @@ public class UdpSocketThread extends Thread {
 
                 System.out.println("recived " +
                         DatatypeConverter.printHexBinary(buf) + "on" + new Date() );
+//                String hola = "hola";
+//                socketController.send(new DatagramPacket(hola.getBytes(), hola.getBytes().length, InetAddress.getByName("localhost"), 44446));
+packet.setAddress(localAdress);
+packet.setPort(controllerPort);
+socketController.send(packet);
 
 		// send the response to the client at "address" and "port"
 //                InetAddress address = packet.getAddress();
